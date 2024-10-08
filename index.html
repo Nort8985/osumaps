@@ -3,129 +3,91 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mops HD - osu! Map Links</title>
+  <title>Game Developer Jobs</title>
   <style>
-    * {
+    /* Основные стили страницы */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #f0f0f0, #e3e3e3);
+      background-color: #f0f2f5;
       color: #333;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
+    }
+
+    h1, h2 {
+      color: #4a90e2;
+    }
+
+    /* Контейнер для основной информации */
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      padding: 20px;
       text-align: center;
     }
 
-    h1 {
-      font-size: 3rem;
-      color: #ff66a3;
-      margin-bottom: 10px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
-    }
-
-    h2 {
-      font-size: 1.5rem;
-      color: #555;
-      margin-bottom: 20px;
-    }
-
-    .container {
-      max-width: 600px;
-      background: #ffffff;
-      border-radius: 15px;
-      padding: 30px;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.3s;
-    }
-
-    .container:hover {
-      transform: translateY(-5px);
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 30px;
     }
 
     input {
-      padding: 15px;
-      border: 2px solid #ddd;
+      padding: 10px;
+      border: 1px solid #ddd;
       border-radius: 5px;
       font-size: 16px;
-      width: 100%;
-      margin-bottom: 10px;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #ff66a3;
-      box-shadow: 0 0 5px rgba(255, 102, 163, 0.5);
     }
 
     button {
       padding: 12px;
-      background-color: #ff66a3;
+      background-color: #4a90e2;
       color: white;
       border: none;
       border-radius: 5px;
       font-size: 16px;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-      width: 100%;
-      margin-bottom: 10px;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #ff007f;
-      transform: scale(1.05);
+      background-color: #357ABD;
     }
 
-    .map {
+    .vacancy {
       background: #f9f9f9;
-      border-radius: 10px;
+      border-left: 4px solid #4a90e2;
       padding: 15px;
+      border-radius: 5px;
       margin-bottom: 15px;
       position: relative;
-      overflow: hidden;
-      transition: transform 0.2s, box-shadow 0.2s;
-      border-left: 5px solid #ff66a3;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      text-align: left;
     }
 
-    .map:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    .vacancy strong {
+      font-size: 16px;
+      color: #333;
     }
 
-    .map a {
-      color: #ff66a3;
-      text-decoration: none;
-      font-weight: bold;
-      transition: color 0.3s;
-    }
-
-    .map a:hover {
-      color: #ff007f;
-    }
-
-    .delete-button {
-      display: none; /* Hidden by default */
-      background-color: #ff4c4c;
+    .vacancy button {
+      display: block;
       margin-top: 10px;
+      background-color: #ff6f61;
       width: 100%;
       text-align: center;
-      border: none;
-      border-radius: 5px;
-      padding: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s;
     }
 
-    .delete-button:hover {
-      background-color: #ff1a1a;
+    .vacancy button:hover {
+      background-color: #d95445;
     }
 
     footer {
@@ -138,129 +100,241 @@
 <body>
 
   <div class="container">
-    <h1>Mops HD</h1>
-    <h2>osu! Map Links</h2>
-    <input type="text" id="mapLink" placeholder="Enter osu! map link" required>
-    <button id="submitButton">Submit Link</button> <!-- Submit button -->
-    <div id="mapList"></div>
+    <h1>Добавить вакансию разработчика игр</h1>
+
+    <!-- Форма для добавления новой вакансии -->
+    <form id="vacancyForm">
+      <input type="text" id="name" placeholder="Имя разработчика" required>
+      <input type="text" id="skills" placeholder="Навыки (например, Unity, JavaScript)" required>
+      <input type="text" id="experience" placeholder="Опыт (например, 2 года)" required>
+      <input type="text" id="contact" placeholder="Номер телефона или Email (необязательно)">
+      <button type="submit">Добавить вакансию</button>
+    </form>
+
+    <h2>Список вакансий</h2>
+    <div id="vacancyList"></div>
+
+    <div id="authContainer" style="display: flex; flex-direction: column; gap: 15px;">
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Пароль" required>
+      <button id="registerButton">Регистрация</button>
+      <button id="loginButton">Вход</button>
+      <button id="logoutButton" style="display: none;">Выход</button>
+    </div>
   </div>
 
   <footer>
-    Пример ссылки:<br>https://osu.ppy.sh/beatmapsets/<br>1218819#osu/2535904
+    Game Developer Jobs © 2024
   </footer>
 
   <script type="module">
+    // Импорт функций из Firebase SDK
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, orderBy, query } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 
+    // Конфигурация Firebase
     const firebaseConfig = {
-      apiKey: "AIzaSyAyrzypGv648ySaHuJul7Rc8lnRDagmc2g",
-      authDomain: "osu-95465.firebaseapp.com",
-      projectId: "osu-95465",
-      storageBucket: "osu-95465.appspot.com",
-      messagingSenderId: "875056243293",
-      appId: "1:875056243293:web:d433b80e7341fd993923b4"
+      apiKey: "AIzaSyCfbzq4dJ9ujYb__vFfN_l5by9ZWwWlCMo",
+      authDomain: "site-2ea5f.firebaseapp.com",
+      projectId: "site-2ea5f",
+      storageBucket: "site-2ea5f.appspot.com",
+      messagingSenderId: "699136563902",
+      appId: "1:699136563902:web:e2c44d57a8ac9540d9dcef",
+      measurementId: "G-XWZSTCPMR7"
     };
 
+    // Инициализация Firebase
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    const db = getFirestore(app); // Инициализация Firestore
+    const auth = getAuth(); // Инициализация Auth
+    const ADMIN_EMAIL = "assassin22052007@gmail.com";
 
-    async function addMapLink(link) {
+    // Функция для добавления данных в Firestore
+    async function addVacancy(name, skills, experience, contact) {
       try {
-        const docRef = await addDoc(collection(db, "maps"), {
-          link: link,
-          createdAt: new Date()
+        const docRef = await addDoc(collection(db, "vacancies"), {
+          name: name,
+          skills: skills,
+          experience: experience,
+          contact: contact,
+          createdAt: new Date(), // Сохраняем текущее время создания вакансии
+          createdBy: auth.currentUser ? auth.currentUser.uid : null // Запоминаем ID пользователя
         });
-        console.log("Map added with ID: ", docRef.id);
-        loadMapLinks(); 
+        console.log("Вакансия добавлена с ID: ", docRef.id);
+        loadVacancies(); // Обновляем список вакансий
       } catch (e) {
-        console.error("Error adding map link: ", e);
+        console.error("Ошибка при добавлении вакансии: ", e);
       }
     }
 
-    async function loadMapLinks() {
-      const querySnapshot = await getDocs(collection(db, "maps"));
-      const mapList = document.getElementById("mapList");
-      mapList.innerHTML = ''; 
-      let mapCounter = 1; 
+    // Функция для получения данных из Firestore
+    // Функция для получения данных из Firestore с сортировкой по дате создания
+async function loadVacancies() {
+  const vacancyList = document.getElementById("vacancyList");
+  vacancyList.innerHTML = ''; // Очищаем список вакансий
 
-      for (const doc of querySnapshot.docs) {
-        const data = doc.data();
-        const link = data.link;
-        const mapId = link.split('/').pop(); // Extract map ID from the link
-        const beatmapName = await fetchBeatmapName(mapId); // Fetch beatmap name
+  // Запрос с сортировкой по дате создания (новые вакансии первыми)
+  const q = query(collection(db, "vacancies"), orderBy("createdAt", "desc"));
+  const querySnapshot = await getDocs(q);
 
-        const mapDiv = document.createElement("div");
-        mapDiv.classList.add("map");
-        mapDiv.innerHTML = `
-          <a href="${link}" target="_blank">${beatmapName || `Map No. ${mapCounter}`}</a>
-          <button class="delete-button" id="delete-${doc.id}" onclick="deleteMapLink('${doc.id}')">Delete</button>
+  querySnapshot.forEach((doc) => {
+    const vacancyData = doc.data();
+    const vacancyDiv = document.createElement("div");
+    vacancyDiv.classList.add("vacancy");
+
+    // Преобразуем timestamp в удобочитаемый формат
+    const createdAt = vacancyData.createdAt.toDate();
+    const formattedDate = createdAt.toLocaleDateString() + ' ' + createdAt.toLocaleTimeString();
+
+    vacancyDiv.innerHTML = `
+      <strong>Имя:</strong> ${vacancyData.name} <br>
+      <strong>Навыки:</strong> ${vacancyData.skills} <br>
+      <strong>Опыт:</strong> ${vacancyData.experience} <br>
+      <strong>Дата добавления:</strong> ${formattedDate} <br>
+      ${vacancyData.contact ? `<button onclick="showContact('${vacancyData.contact}')">Проверить контакт</button>` : ""}
+    `;
+
+    // Проверяем, является ли пользователь администратором или создателем вакансии
+    if (auth.currentUser) {
+      if (vacancyData.createdBy === auth.currentUser.uid || auth.currentUser.email === "assasin22052007@gmail.com") {
+        vacancyDiv.innerHTML += `
+          <button onclick="editVacancy('${doc.id}', '${vacancyData.name}', '${vacancyData.skills}', '${vacancyData.experience}', '${vacancyData.contact}')">Редактировать</button>
+          <button onclick="deleteVacancy('${doc.id}')">Удалить</button>
         `;
-        mapList.appendChild(mapDiv);
-        mapCounter++; 
       }
     }
 
-    async function fetchBeatmapName(mapId) {
-      const apiKey = "877327e22308953f6ceb7c516f14ae9a86a3e290"; // Your osu! API key
-      const url = `https://osu.ppy.sh/api/get_beatmaps?k=${apiKey}&b=${mapId}`;
+    vacancyList.appendChild(vacancyDiv);
+  });
+}
 
+    // Функция для редактирования вакансии
+    window.editVacancy = function(id, name, skills, experience, contact) {
+      document.getElementById("name").value = name;
+      document.getElementById("skills").value = skills;
+      document.getElementById("experience").value = experience;
+      document.getElementById("contact").value = contact || '';
+      document.getElementById("vacancyForm").dataset.editingId = id; // Сохраняем ID для обновления
+    }
+
+    // Функция для обновления вакансии
+    async function updateVacancy(id, name, skills, experience, contact) {
+      const vacancyRef = doc(db, "vacancies", id);
       try {
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.length > 0) {
-          return data[0].title; // Return the beatmap title
-        }
-      } catch (error) {
-        console.error("Error fetching beatmap name:", error);
-      }
-      return null; // Return null if the beatmap name cannot be fetched
-    }
-
-    window.deleteMapLink = async function(id) {
-      const mapRef = doc(db, "maps", id);
-      try {
-        await deleteDoc(mapRef);
-        console.log("Map deleted with ID: ", id);
-        loadMapLinks(); 
-      } catch (e) {
-        console.error("Error deleting map link: ", e);
-      }
-    }
-
-    document.getElementById("submitButton").addEventListener("click", function() {
-    const linkInput = document.getElementById("mapLink");
-    const link = linkInput.value;
-
-    if (link === "Наш слон") {
-        return; // Do nothing if "Наш слон" is entered
-    }
-
-    if (link.startsWith("https://osu.ppy.sh") && link.includes("#osu")) {
-        addMapLink(link); 
-        linkInput.value = ''; 
-    } else {
-        alert("Неверный формат ссылки. Так примерно она должна ввглядить https://osu.ppy.sh/beatmapsets/1218819#osu/2535904");
-    }
-});
-
-    let deleteButtonVisible = false; // Track the visibility of delete buttons
-
-    document.getElementById("mapLink").addEventListener("input", function() {
-      const link = this.value;
-      const deleteButtons = document.querySelectorAll(".delete-button");
-
-      if (link.includes("Наш слон")) {
-        deleteButtonVisible = !deleteButtonVisible; // Toggle visibility
-        deleteButtons.forEach(button => {
-          button.style.display = deleteButtonVisible ? "block" : "none"; 
+        await updateDoc(vacancyRef, {
+          name: name,
+          skills: skills,
+          experience: experience,
+          contact: contact
         });
-        this.value = ''; // Clear the input field after toggle
-        }
+        console.log("Вакансия обновлена с ID: ", id);
+        loadVacancies(); // Обновляем список вакансий после обновления
+      } catch (e) {
+        console.error("Ошибка при обновлении вакансии: ", e);
+      }
+    }
+
+    // Функция для удаления вакансии
+    window.deleteVacancy = async function(id) {
+      const vacancyRef = doc(db, "vacancies", id);
+      try {
+        await deleteDoc(vacancyRef);
+        console.log("Вакансия удалена с ID: ", id);
+        loadVacancies(); // Обновляем список вакансий после удаления
+      } catch (e) {
+        console.error("Ошибка при удалении вакансии: ", e);
+      }
+    }
+
+    // Функция для отображения контакта
+    window.showContact = function(contact) {
+      alert("Контакт: " + contact);
+    }
+
+    // Обработка формы добавления вакансии
+    document.getElementById("vacancyForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      const name = document.getElementById("name").value;
+      const skills = document.getElementById("skills").value;
+      const experience = document.getElementById("experience").value;
+      const contact = document.getElementById("contact").value;
+
+      const editingId = this.dataset.editingId; // Проверяем, редактируется ли вакансия
+
+      if (editingId) {
+        // Если редактируем, то обновляем существующую вакансию
+        await updateVacancy(editingId, name, skills, experience, contact);
+        delete this.dataset.editingId; // Убираем ID редактируемой вакансии
+      } else {
+        // Если не редактируем, то добавляем новую вакансию
+        await addVacancy(name, skills, experience, contact);
+      }
+
+      // Очищаем форму
+      document.getElementById("name").value = '';
+      document.getElementById("skills").value = '';
+      document.getElementById("experience").value = '';
+      document.getElementById("contact").value = '';
     });
 
+    // Обработка регистрации пользователя
+    document.getElementById("registerButton").addEventListener("click", function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log("Регистрация прошла успешно:", user.email);
+        })
+        .catch((error) => {
+          console.error("Ошибка регистрации:", error);
+        });
+    });
+
+    // Обработка входа пользователя
+    document.getElementById("loginButton").addEventListener("click", function() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log("Вход выполнен:", user.email);
+          document.getElementById("logoutButton").style.display = "block"; // Показываем кнопку выхода
+          loadVacancies(); // Загружаем вакансии
+        })
+        .catch((error) => {
+          console.error("Ошибка входа:", error);
+        });
+    });
+
+    // Обработка выхода пользователя
+    document.getElementById("logoutButton").addEventListener("click", function() {
+      signOut(auth)
+        .then(() => {
+          console.log("Пользователь вышел");
+          document.getElementById("logoutButton").style.display = "none"; // Скрываем кнопку выхода
+          loadVacancies(); // Обновляем список вакансий после выхода
+        })
+        .catch((error) => {
+          console.error("Ошибка выхода:", error);
+        });
+    });
+
+    // Автоматическое отслеживание состояния аутентификации
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("Пользователь авторизован:", user.email);
+        document.getElementById("logoutButton").style.display = "block"; // Показываем кнопку выхода
+      } else {
+        console.log("Пользователь не авторизован");
+        document.getElementById("logoutButton").style.display = "none"; // Скрываем кнопку выхода
+      }
+    });
+
+    // Загрузка вакансий при загрузке страницы
     window.addEventListener("load", function() {
-      loadMapLinks();
+      loadVacancies();
     });
   </script>
 
