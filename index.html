@@ -146,7 +146,7 @@
   </div>
 
   <footer>
-    osu! Map Links © 2024
+    Пример ссылки:<br>https://osu.ppy.sh/beatmapsets/<br>1218819#osu/2535904
   </footer>
 
   <script type="module">
@@ -229,20 +229,20 @@
     }
 
     document.getElementById("submitButton").addEventListener("click", function() {
-      const linkInput = document.getElementById("mapLink");
-      const link = linkInput.value;
+    const linkInput = document.getElementById("mapLink");
+    const link = linkInput.value;
 
-      if (link === "Наш слон") {
+    if (link === "Наш слон") {
         return; // Do nothing if "Наш слон" is entered
-      }
+    }
 
-      if (link.startsWith("https://osu.ppy.sh")) {
+    if (link.startsWith("https://osu.ppy.sh") && link.includes("#osu")) {
         addMapLink(link); 
         linkInput.value = ''; 
-      } else {
-        alert("Invalid osu! link. It must start with 'https://osu.ppy.sh'.");
-      }
-    });
+    } else {
+        alert("Неверный формат ссылки. Так примерно она должна ввглядить https://osu.ppy.sh/beatmapsets/1218819#osu/2535904");
+    }
+});
 
     let deleteButtonVisible = false; // Track the visibility of delete buttons
 

@@ -1,0 +1,144 @@
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(135deg, #f0f0f0, #e3e3e3);
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  color: #ff66a3;
+  margin-bottom: 10px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+h2 {
+  font-size: 1.5rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.container {
+  max-width: 600px;
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 30px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+}
+
+input {
+  padding: 15px;
+  border: 2px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+  margin-bottom: 10px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus {
+  outline: none;
+  border-color: #ff66a3;
+  box-shadow: 0 0 5px rgba(255, 102, 163, 0.5);
+}
+
+button {
+  padding: 12px;
+  background-color: #ff66a3;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  background-color: #ff007f;
+  transform: scale(1.05);
+}
+
+.map {
+  background: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 5px solid #ff66a3;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.map:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.map a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.map a:hover {
+  text-decoration: underline;
+}
+
+.delete-button {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none; /* Initially hidden */
+}
+
+.delete-button:hover {
+  background-color: #ff1a1a;
+}
+
+.example-container {
+  background-color: #e7f3ff;
+  border: 1px solid #a3d1ff;
+  border-radius: 10px;
+  padding: 15px;
+  margin-top: 20px;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.example-container h3 {
+  margin-bottom: 10px;
+}
+
+.example-link {
+  font-size: 14px;
+  color: #007bff;
+  word-wrap: break-word; /* Allow links to wrap */
+}
