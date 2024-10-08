@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mops HD - osu! Map Links</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #f0f0f0, #e3e3e3);
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      color: #ff66a3;
+      margin-bottom: 10px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .container {
+      max-width: 600px;
+      background: #ffffff;
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    input {
+      padding: 15px;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100%;
+      margin-bottom: 10px;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #ff66a3;
+      box-shadow: 0 0 5px rgba(255, 102, 163, 0.5);
+    }
+
+    button {
+      padding: 12px;
+      background-color: #ff66a3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    button:hover {
+      background-color: #ff007f;
+      transform: scale(1.05);
+    }
+
+    .map {
+      background: #f9f9f9;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-left: 5px solid #ff66a3;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .map:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .map a {
+      color: #ff66a3;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    .map a:hover {
+      color: #ff007f;
+    }
+
+    .delete-button {
+      display: none; /* Hidden by default */
+      background-color: #ff4c4c;
+      margin-top: 10px;
+      width: 100%;
+      text-align: center;
+      border: none;
+      border-radius: 5px;
+      padding: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .delete-button:hover {
+      background-color: #ff1a1a;
+    }
+
+    footer {
+      margin-top: 30px;
+      color: #888;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Mops HD</h1>
+    <h2>osu! Map Links</h2>
+    <input type="text" id="mapLink" placeholder="Enter osu! map link" required>
+    <button id="submitButton">Submit Link</button> <!-- Submit button -->
+    <div id="mapList"></div>
+  </div>
+
+  <footer>
+    osu! Map Links © 2024
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAyrzypGv648ySaHuJul7Rc8lnRDagmc2g",
+      authDomain: "osu-95465.firebaseapp.com",
+      projectId: "osu-95465",
+      storageBucket: "osu-95465.appspot.com",
+      messagingSenderId: "875056243293",
+      appId: "1:875056243293:web:d433b80e7341fd993923b4"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function addMapLink(link) {
+      try {
+        const docRef = await addDoc(collection(db, "maps"), {
+          link: link,
+          createdAt: new Date()
+        });
+        console.log("Map added with ID: ", docRef.id);
+        loadMapLinks(); 
+      } catch (e) {
+        console.error("Error adding map link: ", e);
+      }
+    }
+
+    async function loadMapLinks() {
+      const querySnapshot = await getDocs(collection(db, "maps"));
+      const mapList = document.getElementById("mapList");
+      mapList.innerHTML = ''; 
+      let mapCounter = 1; 
+
+      for (const doc of querySnapshot.docs) {
+        const data = doc.data();
+        const link = data.link;
+        const mapId = link.split('/').pop(); // Extract map ID from the link
+        const beatmapName = await fetchBeatmapName(mapId); // Fetch beatmap name
+
+        const mapDiv = document.createElement("div");
+        mapDiv.classList.add("map");
+        mapDiv.innerHTML = `
+          <a href="${link}" target="_blank">${beatmapName || `Map No. ${mapCounter}`}</a>
+          <button class="delete-button" id="delete-${doc.id}" onclick="deleteMapLink('${doc.id}')">Delete</button>
+        `;
+        mapList.appendChild(mapDiv);
+        mapCounter++; 
+      }
+    }
+
+    async function fetchBeatmapName(mapId) {
+      const apiKey = "877327e22308953f6ceb7c516f14ae9a86a3e290"; // Your osu! API key
+      const url = `https://osu.ppy.sh/api/get_beatmaps?k=${apiKey}&b=${mapId}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.length > 0) {
+          return data[0].title; // Return the beatmap title
+        }
+      } catch (error) {
+        console.error("Error fetching beatmap name:", error);
+      }
+      return null; // Return null if the beatmap name cannot be fetched
+    }
+
+    window.deleteMapLink = async function(id) {
+      const mapRef = doc(db, "maps", id);
+      try {
+        await deleteDoc(mapRef);
+        console.log("Map deleted with ID: ", id);
+        loadMapLinks(); 
+      } catch (e) {
+        console.error("Error deleting map link: ", e);
+      }
+    }
+
+    document.getElementById("submitButton").addEventListener("click", function() {
+      const linkInput = document.getElementById("mapLink");
+      const link = linkInput.value;
+
+      if (link === "Наш слон") {
+        return; // Do nothing if "Наш слон" is entered
+      }
+
+      if (link.startsWith("https://osu.ppy.sh")) {
+        addMapLink(link); 
+        linkInput.value = ''; 
+      } else {
+        alert("Invalid osu! link. It must start with 'https://osu.ppy.sh'.");
+      }
+    });
+
+    let deleteButtonVisible = false; // Track the visibility of delete buttons
+
+    document.getElementById("mapLink").addEventListener("input", function() {
+      const link = this.value;
+      const deleteButtons = document.querySelectorAll(".delete-button");
+
+      if (link.includes("Наш слон")) {
+        deleteButtonVisible = !deleteButtonVisible; // Toggle visibility
+        deleteButtons.forEach(button => {
+          button.style.display = deleteButtonVisible ? "block" : "none"; 
+        });
+        this.value = ''; // Clear the input field after toggle
+        }
+    });
+
+    window.addEventListener("load", function() {
+      loadMapLinks();
+    });
+  </script>
+
+</body>
+</html>
