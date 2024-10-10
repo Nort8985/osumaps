@@ -13,7 +13,7 @@ body {
 }
 
 .container {
-  background-color: rgba(255, 255, 255, 0.5); /* More transparent white background */
+  background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
   padding: 20px;
   border-radius: 15px; /* Rounded corners */
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow */
@@ -64,7 +64,7 @@ button:hover {
 }
 
 .map {
-  background-color: rgba(255, 102, 170, 0.2); /* Light pink overlay for maps */
+  background-color: rgba(255, 102, 170, 0.1); /* Light pink overlay for maps */
   padding: 15px;
   margin-bottom: 10px;
   border-radius: 10px;
