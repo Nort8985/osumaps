@@ -27,26 +27,30 @@ async function addMapLink(link) {
 }
 
 async function loadMapLinks() {
-  const querySnapshot = await getDocs(collection(db, "maps"));
-  const mapList = document.getElementById("mapList");
-  mapList.innerHTML = ''; 
-  let mapCounter = 1; 
+  try {
+    const querySnapshot = await getDocs(collection(db, "maps"));
+    const mapList = document.getElementById("mapList");
+    mapList.innerHTML = ''; 
+    let mapCounter = 1; 
 
-  for (const doc of querySnapshot.docs) {
-    const data = doc.data();
-    const link = data.link;
-    const mapId = link.split('/').pop(); // Extract map ID from the link
-    const beatmapInfo = await fetchBeatmapInfo(mapId); // Fetch beatmap info
+    for (const doc of querySnapshot.docs) {
+      const data = doc.data();
+      const link = data.link;
+      const mapId = link.split('/').pop(); // Extract map ID from the link
+      const beatmapInfo = await fetchBeatmapInfo(mapId); // Fetch beatmap info
 
-    const mapDiv = document.createElement("div");
-    mapDiv.classList.add("map");
-    mapDiv.innerHTML = `
-      <a href="${link}" target="_blank">${beatmapInfo.title || `Map No. ${mapCounter}`}</a>
-      <p>Stars: ${beatmapInfo.stars !== null ? beatmapInfo.stars.toFixed(1) : 'N/A'}</p> <!-- Format to one decimal -->
-      <button class="delete-button" id="delete-${doc.id}" onclick="deleteMapLink('${doc.id}')">Delete</button>
-    `;
-    mapList.appendChild(mapDiv);
-    mapCounter++; 
+      const mapDiv = document.createElement("div");
+      mapDiv.classList.add("map");
+      mapDiv.innerHTML = `
+        <a href="${link}" target="_blank">${beatmapInfo.title || `Map No. ${mapCounter}`}</a>
+        <p>Stars: ${beatmapInfo.stars !== null ? beatmapInfo.stars.toFixed(1) : 'N/A'}</p>
+        <button class="delete-button" id="delete-${doc.id}" onclick="deleteMapLink('${doc.id}')">Delete</button>
+      `;
+      mapList.appendChild(mapDiv);
+      mapCounter++; 
+    }
+  } catch (e) {
+    console.error("Error loading map links: ", e);
   }
 }
 
@@ -59,14 +63,14 @@ async function fetchBeatmapInfo(mapId) {
     const data = await response.json();
     if (data.length > 0) {
       return {
-        title: data[0].title, // Return the beatmap title
-        stars: parseFloat(data[0].difficultyrating) // Parse the difficultyrating to float
+        title: data[0].title,
+        stars: parseFloat(data[0].difficultyrating)
       };
     }
   } catch (error) {
     console.error("Error fetching beatmap info:", error);
   }
-  return { title: null, stars: null }; // Return null if the beatmap info cannot be fetched
+  return { title: null, stars: null }; 
 }
 
 window.deleteMapLink = async function(id) {
@@ -82,32 +86,32 @@ window.deleteMapLink = async function(id) {
 
 document.getElementById("submitButton").addEventListener("click", function() {
   const linkInput = document.getElementById("mapLink");
-  const link = linkInput.value;
+  const link = linkInput.value.trim();
 
   if (link === "Наш слон") {
-      return; // Do nothing if "Наш слон" is entered
+    return; 
   }
 
   if (link.startsWith("https://osu.ppy.sh") && link.includes("#osu")) {
-      addMapLink(link); 
-      linkInput.value = ''; 
+    addMapLink(link); 
+    linkInput.value = ''; 
   } else {
-      alert("Неверный формат ссылки. Так примерно она должна ввглядить https://osu.ppy.sh/beatmapsets/1218819#osu/2535904");
+    alert("Неверный формат ссылки. Она должна выглядеть примерно так: https://osu.ppy.sh/beatmapsets/1218819#osu/2535904");
   }
 });
 
-let deleteButtonVisible = false; // Track the visibility of delete buttons
+let deleteButtonVisible = false;
 
 document.getElementById("mapLink").addEventListener("input", function() {
   const link = this.value;
   const deleteButtons = document.querySelectorAll(".delete-button");
 
   if (link.includes("Наш слон")) {
-    deleteButtonVisible = !deleteButtonVisible; // Toggle visibility
+    deleteButtonVisible = !deleteButtonVisible; 
     deleteButtons.forEach(button => {
       button.style.display = deleteButtonVisible ? "block" : "none"; 
     });
-    this.value = ''; // Clear the input field after toggle
+    this.value = ''; 
   }
 });
 
