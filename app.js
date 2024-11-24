@@ -1,15 +1,17 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore"; // Импортируем необходимые функции Firestore
 
+// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAyrzypGv648ySaHuJul7Rc8lnRDagmc2g",
-  authDomain: "osu-95465.firebaseapp.com",
-  projectId: "osu-95465",
-  storageBucket: "osu-95465.appspot.com",
-  messagingSenderId: "875056243293",
-  appId: "1:875056243293:web:d433b80e7341fd993923b4"
+  apiKey: "AIzaSyCjewl6Vjx9t37ZwbDWXC4avad-fZUEiLI",
+  authDomain: "bot-ai-4c0c2.firebaseapp.com",
+  projectId: "bot-ai-4c0c2",
+  storageBucket: "bot-ai-4c0c2.firebasestorage.app",
+  messagingSenderId: "978421702245",
+  appId: "1:978421702245:web:c0299987f1f4cb846b308c"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
