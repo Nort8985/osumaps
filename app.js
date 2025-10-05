@@ -15,14 +15,56 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+function extractBeatmapId(link) {
+  // Попытка безопасно распарсить ссылку и извлечь id карты
+  try {
+    const u = new URL(link);
+    // Если есть hash вида "#osu/2535904" или "#fruits/12345"
+    if (u.hash) {
+      const frag = u.hash.slice(1); // убираем '#'
+      const parts = frag.split('/');
+      // последний сегмент, который является числом
+      for (let i = parts.length - 1; i >= 0; i--) {
+        if (/^\d+$/.test(parts[i])) return parts[i];
+      }
+    }
+    // Иначе ищем числовой сегмент в пути, например "/beatmaps/2535904"
+    const pathParts = u.pathname.split('/');
+    for (let i = pathParts.length - 1; i >= 0; i--) {
+      if (/^\d+$/.test(pathParts[i])) return pathParts[i];
+    }
+  } catch (e) {
+    // Невалидный URL — будем пробовать регулярку ниже
+  }
+  // Фоллбек: ищем все числа в строке и возвращаем последнее (обычно это id)
+  const matches = link.match(/(\d{4,})/g);
+  if (matches && matches.length) return matches[matches.length - 1];
+  return null;
+}
+
+function isValidOsuLink(link) {
+  if (!link || typeof link !== 'string') return false;
+  // простой регекс для предварительной проверки домена (поддерживает http/https, с/без www)
+  const osuDomainRegex = /^https?:\/\/(www\.)?osu\.ppy\.sh\/.+/i;
+  if (!osuDomainRegex.test(link.trim())) return false;
+  const id = extractBeatmapId(link);
+  return id !== null;
+}
+
 async function addMapLink(link) {
   try {
+    const mapId = extractBeatmapId(link);
+    if (!mapId) {
+      console.error("Не удалось извлечь ID карты из ссылки:", link);
+      return;
+    }
     const docRef = await addDoc(collection(db, "maps"), {
       link: link,
+      mapId: mapId,
       createdAt: new Date()
     });
     console.log("Map added with ID: ", docRef.id);
-    loadMapLinks(); 
+    loadMapLinks();
   } catch (e) {
     console.error("Error adding map link: ", e);
   }
@@ -32,24 +74,25 @@ async function loadMapLinks() {
   try {
     const querySnapshot = await getDocs(collection(db, "maps"));
     const mapList = document.getElementById("mapList");
-    mapList.innerHTML = ''; 
-    let mapCounter = 1; 
+    mapList.innerHTML = '';
+    let mapCounter = 1;
 
-    for (const doc of querySnapshot.docs) {
-      const data = doc.data();
+    for (const d of querySnapshot.docs) {
+      const data = d.data();
       const link = data.link;
-      const mapId = link.split('/').pop(); // Extract map ID from the link
-      const beatmapInfo = await fetchBeatmapInfo(mapId); // Fetch beatmap info
+      // используем сохранённый mapId если он есть, иначе извлекаем
+      const mapId = data.mapId || extractBeatmapId(link);
+      const beatmapInfo = mapId ? await fetchBeatmapInfo(mapId) : { title: null, stars: null };
 
       const mapDiv = document.createElement("div");
       mapDiv.classList.add("map");
       mapDiv.innerHTML = `
         <a href="${link}" target="_blank">${beatmapInfo.title || `Map No. ${mapCounter}`}</a>
         <p>Stars: ${beatmapInfo.stars !== null ? beatmapInfo.stars.toFixed(1) : 'N/A'}</p>
-        <button class="delete-button" id="delete-${doc.id}" onclick="deleteMapLink('${doc.id}')">Delete</button>
+        <button class="delete-button" id="delete-${d.id}" onclick="deleteMapLink('${d.id}')">Delete</button>
       `;
       mapList.appendChild(mapDiv);
-      mapCounter++; 
+      mapCounter++;
     }
   } catch (e) {
     console.error("Error loading map links: ", e);
@@ -63,7 +106,7 @@ async function fetchBeatmapInfo(mapId) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    if (data.length > 0) {
+    if (data && data.length > 0) {
       return {
         title: data[0].title,
         stars: parseFloat(data[0].difficultyrating)
@@ -72,7 +115,7 @@ async function fetchBeatmapInfo(mapId) {
   } catch (error) {
     console.error("Error fetching beatmap info:", error);
   }
-  return { title: null, stars: null }; 
+  return { title: null, stars: null };
 }
 
 window.deleteMapLink = async function(id) {
@@ -80,7 +123,7 @@ window.deleteMapLink = async function(id) {
   try {
     await deleteDoc(mapRef);
     console.log("Map deleted with ID: ", id);
-    loadMapLinks(); 
+    loadMapLinks();
   } catch (e) {
     console.error("Error deleting map link: ", e);
   }
@@ -90,16 +133,22 @@ document.getElementById("submitButton").addEventListener("click", function() {
   const linkInput = document.getElementById("mapLink");
   const link = linkInput.value.trim();
 
-  if (link === "Наш слон") {
-    return; 
+  if (!link) {
+    alert("Введите ссылку на карту.");
+    return;
   }
 
-  if (link.startsWith("https://osu.ppy.sh") && link.includes("#osu")) {
-    addMapLink(link); 
-    linkInput.value = ''; 
-  } else {
-    alert("Неверный формат ссылки. Она должна выглядеть примерно так: https://osu.ppy.sh/beatmapsets/1218819#osu/2535904");
+  if (link === "Наш слон") {
+    return;
   }
+
+  if (!isValidOsuLink(link)) {
+    alert("Неверный формат ссылки. Она должна выглядеть примерно так: https://osu.ppy.sh/beatmapsets/1218819#osu/2535904 или https://osu.ppy.sh/beatmaps/2535904");
+    return;
+  }
+
+  addMapLink(link);
+  linkInput.value = '';
 });
 
 let deleteButtonVisible = false;
@@ -109,11 +158,11 @@ document.getElementById("mapLink").addEventListener("input", function() {
   const deleteButtons = document.querySelectorAll(".delete-button");
 
   if (link.includes("Наш слон")) {
-    deleteButtonVisible = !deleteButtonVisible; 
+    deleteButtonVisible = !deleteButtonVisible;
     deleteButtons.forEach(button => {
-      button.style.display = deleteButtonVisible ? "block" : "none"; 
+      button.style.display = deleteButtonVisible ? "block" : "none";
     });
-    this.value = ''; 
+    this.value = '';
   }
 });
 
